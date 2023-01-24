@@ -1,0 +1,36 @@
+name: ta-tester
+description: "GitHub actions to test TA for Splunk"
+branding:
+  icon: eye
+  color: red
+inputs:
+  splunk-version:
+    description: "Splunk version"
+    required: false
+  test-type:
+    type: string
+    description:  test type
+  browser:
+    type: string
+    description: browser type
+  repository:
+    type: string
+    description: Select TA
+  branch:
+    type: string
+    description: Select the branch
+  test-adops:
+    type: string
+    description: extra parameters for tests
+  video-record:
+    type: boolean
+    description: Video recording
+    default: falsactione
+runs:
+  using: composite
+  steps:
+    - id: splunk
+      shell: bash
+      run: |
+        echo "TESSST"
+
