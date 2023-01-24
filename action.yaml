@@ -28,6 +28,48 @@ inputs:
     default: falsactione
 runs:
   using: composite
+  services:
+    sc4s:
+      image: ghcr.io/splunk/splunk-connect-for-syslog/container2
+      env:
+        SC4S_DEST_SPLUNK_HEC_DEFAULT_URL: https://splunk:8088
+        SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN: 9b741d03-43e9-4164-908b-e09102327d22
+        SC4S_DEST_SPLUNK_HEC_DEFAULT_TLS_VERIFY: "no"
+        SC4S_LISTEN_PFSENSE_FIREWALL_TCP_PORT: 6000
+        SC4S_LISTEN_SIMPLE_TEST_ONE_TCP_PORT: 5514
+        SC4S_LISTEN_SIMPLE_TEST_ONE_UDP_PORT: 5514
+        SC4S_LISTEN_SIMPLE_TEST_TWO_TCP_PORT: 5601
+        SC4S_LISTEN_SPECTRACOM_NTP_TCP_PORT: 6002
+        SC4S_LISTEN_CISCO_ESA_TCP_PORT: 9000
+        SC4S_LISTEN_RARITAN_DSX_TCP_PORT: 9001
+        SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL: "yes"
+        SC4S_SOURCE_RICOH_SYSLOG_FIXHOST: "yes"
+        TEST_SC4S_ACTIVATE_EXAMPLES: "yes"
+        SC4S_DEBUG_CONTAINER: "yes"
+        SC4S_SOURCE_VMWARE_VSPHERE_GROUPMSG: "yes"
+        SC4S_USE_VPS_CACHE: "yes"    
+      ports:
+        - 514:514
+        - 601:601
+        - 5000-5050:5000-5050
+        - 6514:6514
+    socks5:
+      image: serjs/go-socks5-proxy:latest
+      ports:
+        - 1080:1080
+      options: >-
+        --tty
+        -i 
+      env:
+        PROXY_USER: splunk_socks5
+        PROXY_PASSWORD: splunk_socks5
+    http-proxy:
+      image: sameersbn/squid:3.5.27-2
+      ports:
+          - '3128:3128'
+      env:
+        PROXY_USERNAME: user1
+        PROXY_PASSWORD: 123456
   steps:
     - id: splunk
       shell: bash
